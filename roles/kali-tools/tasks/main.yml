@@ -1,0 +1,112 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install dependencies
+  apt:
+    name:
+      - git
+      - python3-pip
+    state: present
+
+- name: Remove Impacket using pip
+  pip:
+    name: impacket
+    state: absent
+    extra_args: --break-system-packages
+
+- name: Remove Impacket directory
+  file:
+    path: /opt/impacket
+    state: absent
+
+- name: Remove Impacket binary files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - /usr/bin/impacket-wmiexec
+  - /usr/bin/impacket-addcomputer
+  - /usr/bin/impacket-raiseChild
+  - /usr/bin/impacket-getArch
+  - /usr/bin/impacket-ticketer
+  - /usr/bin/impacket-ticketConverter
+  - /usr/bin/impacket-Get-GPPPassword
+  - /usr/bin/impacket-ping6
+  - /usr/bin/impacket-smbrelayx
+  - /usr/bin/impacket-GetNPUsers
+  - /usr/bin/impacket-getTGT
+  - /usr/bin/impacket-ntfs-read
+  - /usr/bin/impacket-registry-read
+  - /usr/bin/impacket-mqtt_check
+  - /usr/bin/impacket-dcomexec
+  - /usr/bin/impacket-smbexec
+  - /usr/bin/impacket-wmiquery
+  - /usr/bin/impacket-smbserver
+  - /usr/bin/impacket-esentutl
+  - /usr/bin/impacket-netview
+  - /usr/bin/impacket-rpcdump
+  - /usr/bin/impacket-samrdump
+  - /usr/bin/impacket-nmapAnswerMachine
+  - /usr/bin/impacket-keylistattack
+  - /usr/bin/impacket-ntlmrelayx
+  - /usr/bin/impacket-karmaSMB
+  - /usr/bin/impacket-rdp_check
+  - /usr/bin/impacket-sambaPipe
+  - /usr/bin/impacket-rbcd
+  - /usr/bin/impacket-GetADUsers
+  - /usr/bin/impacket-sniffer
+  - /usr/bin/impacket-getPac
+  - /usr/bin/impacket-getST                                                                                                                                                                                          
+  - /usr/bin/impacket-split                                                                                                                                                                                          
+  - /usr/bin/impacket-secretsdump                                                                                                                                                                                    
+  - /usr/bin/impacket-atexec                                                                                                                                                                                         
+  - /usr/bin/impacket-GetUserSPNs                                                                                                                                                                                    
+  - /usr/bin/impacket-mssqlclient                                                                                                                                                                                    
+  - /usr/bin/impacket-kintercept                                                                                                                                                                                     
+  - /usr/bin/impacket-findDelegation                                                                                                                                                                                 
+  - /usr/bin/impacket-dpapi                                                                                                                                                                                          
+  - /usr/bin/impacket-rpcmap                                                                                                                                                                                         
+  - /usr/bin/impacket-services                                                                                                                                                                                       
+  - /usr/bin/impacket-smbpasswd                                                                                                                                                                                      
+  - /usr/bin/impacket-psexec                                                                                                                                                                                         
+  - /usr/bin/impacket-reg                                                                                                                                                                                            
+  - /usr/bin/impacket-lookupsid                                                                                                                                                                                      
+  - /usr/bin/impacket-ping                                                                                                                                                                                           
+  - /usr/bin/impacket-smbclient                                                                                                                                                                                      
+  - /usr/bin/impacket-mimikatz
+  - /usr/bin/impacket-sniff
+  - /usr/bin/impacket-mssqlinstance
+  - /usr/bin/impacket-exchanger
+  - /usr/bin/impacket-goldenPac
+  - /usr/bin/impacket-machine_role
+  - /usr/bin/impacket-wmipersist
+
+- name: Clone Impacket repository
+  git:
+    repo: https://github.com/ThePorgs/impacket.git
+    dest: /opt/impacket
+    version: master
+
+- name: Install Impacket
+  community.general.pipx:
+    name: /opt/impacket
+    state: present
+
+- name: Clone Ghostpack-CompiledBinaries repository
+  git:
+    repo: https://github.com/r3motecontrol/Ghostpack-CompiledBinaries.git
+    dest: /opt/ghostpack
+    version: master
+
+- name: Clone NetExec
+  git:
+    repo: https://github.com/Pennyw0rth/NetExec.git
+    dest: /opt/NetExec
+    version: master
+
+- name: Install NetExec
+  community.general.pipx:
+    name: /opt/NetExec
+    state: present
