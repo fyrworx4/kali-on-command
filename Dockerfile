@@ -1,6 +1,5 @@
 FROM kalilinux/kali-rolling
 
-# copy playbook and roles to docker image
 COPY playbook.yml /playbook.yml
 COPY roles /roles
 
