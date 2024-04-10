@@ -71,6 +71,10 @@
   - /usr/bin/impacket-goldenPac
   - /usr/bin/impacket-machine_role
   - /usr/bin/impacket-wmipersist
+  - /usr/bin/impacket-changepasswd
+  - /usr/bin/impacket-DumpNTLMInfo
+  - /usr/bin/impacket-net
+  - /usr/bin/impacket-tstool
 
 - name: Clone Impacket repository
   git:
