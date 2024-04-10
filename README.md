@@ -2,7 +2,7 @@
 
 (KoC for short)
 
-An Ansible playbook to install common red team operator tools on Kali machines.
+An Ansible playbook to install common red team operator tools on Kali machines. Mainly meant for Red vs. Blue competitions but maybe in the future can be used to do other cool stuff.
 
 ## Features
 
@@ -13,6 +13,7 @@ An Ansible playbook to install common red team operator tools on Kali machines.
 - Installs [NetExec](https://github.com/Pennyw0rth/NetExec)
 - Downloads [ScareCrow](https://github.com/optiv/ScareCrow)
 - Downloads [sliver](https://github.com/BishopFox/sliver) client and server
+- Downloads [sliver_dispatcher](https://github.com/susMdT/sliver_dispatcher)
 
 ## How to use
 
