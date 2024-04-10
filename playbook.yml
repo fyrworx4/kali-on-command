@@ -3,3 +3,4 @@
   roles:
   - install-dependencies
   - kali-tools
+  become: yes
