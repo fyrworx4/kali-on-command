@@ -17,6 +17,6 @@ ansible-galaxy collection install community.general
 To run locally:
 
 ```bash
-ansible-playbook -c local -i localhost, playbook.yml
+ansible-playbook -c local -i localhost playbook.yml
 ```
 
