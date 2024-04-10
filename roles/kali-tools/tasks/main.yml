@@ -10,7 +10,8 @@
       - python3-pip
       - pipx
       - rustc
-      - build-essential
+      - python3-setuptools
+      - mingw-w64
     state: present
 
 - name: Remove Impacket using pip
@@ -116,6 +117,28 @@
   command: pipx install .
   args:
     chdir: /opt/NetExec
+
+- name: Make new directory for ScareCrow
+  file:
+    path: /opt/ScareCrow
+    state: directory
+
+- name: Download ScareCrow
+  get_url:
+    url: https://github.com/optiv/ScareCrow/releases/download/v5.1/ScareCrow_5.1_linux_amd64
+    dest: /opt/ScareCrow/ScareCrow
+    mode: a+x
+
+- name: Make new directory for sliver
+  file:
+    path: /opt/sliver
+    state: directory
+
+- name: Download Sliver C2
+  get_url:
+    url: https://github.com/BishopFox/sliver/releases/download/v1.5.42/sliver-client_linuxcd /
+    dest: /opt/sliver/sliver-client_linux
+    mode: a+x
 
 - name: Ensure pipx path
   command: pipx ensurepath
