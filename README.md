@@ -37,13 +37,13 @@ git clone https://github.com/fyrworx4/kali-on-command.git
 cd kali-on-command
 ```
 
-To run locally:
+To run the playbook locally:
 
 ```bash
 ansible-playbook -c local -i localhost, playbook.yml
 ```
 
-To run on multiple machines, create an inventory file called "hosts" with IP addresses of your Kali VMs:
+To run the playbook on multiple machines, create an inventory file called "hosts" with IP addresses of your Kali VMs:
 
 ```ini
 10.128.0.10
@@ -63,6 +63,16 @@ Where:
 - `-k`: Prompt for SSH password
 - `-b --ask-become-pass`: Elevate to `root` after SSH'ing in, and prompt for sudo password as well
 - `playbook.yml` - the file of the playbook
+
+## Testing with Docker
+
+I've included a Dockerfile that builds a Kali image and runs the playbook for testing purposes (if you are like me and too lazy to test this on a VM):
+
+```bash
+docker-compose up --build
+docker run -t -d <IMAGE-HASH> bash
+docker exec -it <CONTAINER-HASH> bash
+```
 
 ## To-do
 
