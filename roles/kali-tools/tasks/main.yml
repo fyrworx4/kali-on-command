@@ -1,19 +1,4 @@
 ---
-- name: Update apt cache
-  apt:
-    update_cache: yes
-
-- name: Install dependencies
-  apt:
-    name:
-      - git
-      - python3-pip
-      - pipx
-      - rustc
-      - python3-setuptools
-      - mingw-w64
-    state: present
-
 - name: Remove Impacket using pip
   pip:
     name: impacket
@@ -87,9 +72,6 @@
   - /usr/bin/impacket-machine_role
   - /usr/bin/impacket-wmipersist
 
-- name: Increase git size
-  command: git config --global http.postBuffer 524288000
-
 - name: Clone Impacket repository
   git:
     repo: https://github.com/ThePorgs/impacket.git
@@ -123,9 +105,22 @@
     path: /opt/ScareCrow
     state: directory
 
-- name: Download ScareCrow
+- name: Obtain ScareCrow release information from GitHub API
+  uri:
+    url: "https://api.github.com/repos/optiv/ScareCrow/releases/latest"
+    method: GET
+    return_content: yes
+  register: release_info
+
+- name: Extract ScareCrow download URL
+  set_fact:
+    asset_url: "{{ item.browser_download_url }}"
+  loop: "{{ release_info.json.assets }}"
+  when: item.name == "ScareCrow_5.1_linux_amd64"
+
+- name: Download ScareCrow binary
   get_url:
-    url: https://github.com/optiv/ScareCrow/releases/download/v5.1/ScareCrow_5.1_linux_amd64
+    url: "{{ asset_url }}"
     dest: /opt/ScareCrow/ScareCrow
     mode: a+x
 
@@ -134,11 +129,48 @@
     path: /opt/sliver
     state: directory
 
-- name: Download Sliver C2
+- name: Obtain Sliver release information from GitHub API
+  uri:
+    url: "https://api.github.com/repos/BishopFox/sliver/releases/latest"
+    method: GET
+    return_content: yes
+  register: release_info
+
+- name: Extract Sliver client download URL
+  set_fact:
+    asset_url: "{{ item.browser_download_url }}"
+  loop: "{{ release_info.json.assets }}"
+  when: item.name == "sliver-client_linux"
+
+- name: Download Sliver client binary
   get_url:
-    url: https://github.com/BishopFox/sliver/releases/download/v1.5.42/sliver-client_linuxcd /
-    dest: /opt/sliver/sliver-client_linux
+    url: "{{ asset_url }}"
+    dest: /opt/sliver/sliver-client
     mode: a+x
 
-- name: Ensure pipx path
-  command: pipx ensurepath
+- name: Extract Sliver server download URL
+  set_fact:
+    asset_url: "{{ item.browser_download_url }}"
+  loop: "{{ release_info.json.assets }}"
+  when: item.name == "sliver-server_linux"
+
+- name: Download Sliver server binary
+  get_url:
+    url: "{{ asset_url }}"
+    dest: /opt/sliver/sliver-server
+    mode: a+x
+
+- name: Generating Sliver configs directory
+  file:
+    path: /root/.sliver-client/configs
+    state: directory
+    recurse: yes
+
+- name: Generating Sliver configs
+  command: /opt/sliver/sliver-server operator --name root --lhost localhost --save /root/.sliver-client/configs
+
+- name: Install Sliver disaptch
+  git:
+    repo: https://github.com/susMdT/sliver_dispatcher.git
+    dest: /opt/sliver_dispatcher
+    version: master

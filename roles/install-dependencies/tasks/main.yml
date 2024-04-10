@@ -1,0 +1,21 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install dependencies
+  apt:
+    name:
+      - git
+      - python3-pip
+      - pipx
+      - rustc
+      - python3-setuptools
+      - mingw-w64
+    state: present
+
+- name: Increase git size
+  command: git config --global http.postBuffer 524288000
+
+- name: Ensure pipx path
+  command: pipx ensurepath

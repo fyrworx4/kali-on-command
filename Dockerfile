@@ -8,4 +8,6 @@ RUN apt -y update
 RUN apt -y install ansible-core
 RUN ansible-galaxy collection install community.general
 
-CMD ["ansible-playbook", "-c", "local", "-i", "localhost,", "playbook.yml"]
+RUN ansible-playbook -c local -i localhost, playbook.yml
+CMD ["/bin/bash", "-c"]
+# CMD ["ansible-playbook", "-c", "local", "-i", "localhost,", "playbook.yml"]
