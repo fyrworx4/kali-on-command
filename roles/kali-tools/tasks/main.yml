@@ -109,7 +109,6 @@
   uri:
     url: "https://api.github.com/repos/optiv/ScareCrow/releases/latest"
     method: GET
-    return_content: yes
   register: release_info
 
 - name: Extract ScareCrow download URL
@@ -133,7 +132,6 @@
   uri:
     url: "https://api.github.com/repos/BishopFox/sliver/releases/latest"
     method: GET
-    return_content: yes
   register: release_info
 
 - name: Extract Sliver client download URL
