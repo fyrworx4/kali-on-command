@@ -1,5 +1,5 @@
 ---
-- hosts: cstest
+- hosts: a
   roles:
   - install-dependencies
   become: yes
@@ -14,11 +14,16 @@
 #     - cobaltstrike
 #   become: yes
 
-- hosts: slivertest
+# - hosts: slivertest
+#   roles:
+#     - sliver
+#   vars:
+#     - config_name: "SWIFT-RvB-S24"
+#   become: yes
+
+- hosts: pwndrop
   roles:
-    - sliver
-  vars:
-    - config_name: "SWIFT-RvB-S24"
+  - pwndrop
   become: yes
 
 # - hosts: raven

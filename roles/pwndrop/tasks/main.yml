@@ -1,0 +1,61 @@
+---
+- name: Make new directory for pwndrop
+  file:
+    path: /opt/pwndrop
+    state: directory
+
+- name: Obtain pwndrop release information from GitHub API
+  uri:
+    url: "https://api.github.com/repos/kgretzky/pwndrop/releases/latest"
+    method: GET
+    return_content: true
+  register: release_info
+
+- name: Extract pwndrop download URL
+  set_fact:
+    asset_url: "{{ item.browser_download_url }}"
+  loop: "{{ release_info.json.assets }}"
+  when: item.name == "pwndrop-linux-amd64.tar.gz"
+
+- name: Download pwndrop archive
+  get_url:
+    url: "{{ asset_url }}"
+    dest: /opt/pwndrop/pwndrop.zip
+
+- name: Unarchive pwndrop
+  unarchive:
+    src: /opt/pwndrop/pwndrop.zip
+    dest: /opt/pwndrop/
+    remote_src: yes
+
+- name: Make pwndrop executable
+  file:
+    path: /opt/pwndrop/pwndrop/pwndrop
+    mode: u+x
+
+- name: Start pwndrop
+  block:
+  - name: Stop pwndrop
+    command:
+      cmd: /opt/pwndrop/pwndrop/pwndrop stop
+      chdir: /opt/pwndrop/pwndrop
+    ignore_errors: true
+
+  - name: Install pwndrop
+    command:
+      cmd: /opt/pwndrop/pwndrop/pwndrop install
+      chdir: /opt/pwndrop/pwndrop
+
+  - name: Start pwndrop
+    command:
+      cmd: /opt/pwndrop/pwndrop/pwndrop start
+      chdir: /opt/pwndrop/pwndrop
+
+  - name: Get pwndrop status
+    command:
+      cmd: /opt/pwndrop/pwndrop/pwndrop status
+      chdir: /opt/pwndrop/pwndrop
+    register: output
+
+  - name: Print output
+    debug: msg="{{ output }}"
