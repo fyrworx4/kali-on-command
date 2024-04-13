@@ -1,25 +1,25 @@
 ---
-- hosts: a
+- hosts: all
   roles:
   - install-dependencies
   become: yes
 
-#- hosts: operator_vms
-#  roles:
-#  - kali-tools
-# become: yes
+- hosts: operator_vms
+  roles:
+  - kali-tools
+ become: yes
 
-# - hosts: cstest
-#   roles:
-#     - cobaltstrike
-#   become: yes
+- hosts: cobaltstrike
+  roles:
+    - cobaltstrike
+  become: yes
 
-# - hosts: slivertest
-#   roles:
-#     - sliver
-#   vars:
-#     - config_name: "SWIFT-RvB-S24"
-#   become: yes
+- hosts: sliver
+  roles:
+    - sliver
+  vars:
+    - config_name: "SWIFT-RvB-S24"
+  become: yes
 
 - hosts: pwndrop
   roles:
@@ -30,13 +30,3 @@
 #   roles:
 #     - ansible-role-docker
 #     - raven
-# 
-
-#---
-#- name: Set variables
-#  set_fact:
-#    username: 'fyr'
-#    password: 'Password123!'
-#    beacon_filename: 'bruh.exe' # for c2 callbacks
-#    asdf_filename: 'asdf.exe' # ikyky
-#    payload_dest: 'C:\Windows\Tasks'

@@ -43,12 +43,22 @@ To run the playbook locally:
 ansible-playbook -c local -i localhost, playbook.yml
 ```
 
-To run the playbook on multiple machines, create an inventory file called "hosts" with IP addresses of your Kali VMs:
+To run the playbook on multiple machines, create an inventory file called "hosts" with IP addresses of your red team infra:
 
 ```ini
+[operator_vms]
 10.128.0.10
 10.128.0.11
 10.128.0.12
+
+[cobaltstrike]
+10.128.0.12
+
+[sliver]
+10.128.0.13
+
+[pwndrop]
+10.128.0.14
 ```
 
 Then run:
@@ -64,6 +74,8 @@ Where:
 - `-b --ask-become-pass`: Elevate to `root` after SSH'ing in, and prompt for sudo password as well
 - `playbook.yml` - the file of the playbook
 
+You may need to set `StrictHostKeyChecking` to `no` in your `/etc/ssh/ssh_config` file.
+
 ## Testing with Docker
 
 I've included a Dockerfile that builds a Kali image and runs the playbook for testing purposes (if you are like me and too lazy to test this on a VM):
@@ -77,7 +89,7 @@ docker exec -it <CONTAINER-HASH> bash
 ## To-do
 
 - [ ] Install more tools
-- [ ] Deploy C2 team server
-- [ ] Deploy payload hosting web server (pwndrop)
+- [x] Deploy C2 team server
+- [x] Deploy payload hosting web server (pwndrop)
 - [ ] Deploy [raven](https://github.com/nos3curity/Raven)
 - [ ] Build redirectors
