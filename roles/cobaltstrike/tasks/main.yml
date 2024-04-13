@@ -1,0 +1,50 @@
+---
+- name: Make cobaltstrike directory
+  file:
+    path: /opt/cobaltstrike
+    state: directory
+
+- name: Unarchive cobaltstrike zip
+  unarchive:
+    src: cs491.zip
+    dest: /opt/cobaltstrike/
+
+- name: Create service file
+  file:
+    path: /etc/systemd/system/teamserver.service
+    state: touch
+
+- name: Create cobaltstrike service
+  blockinfile:
+    path: /etc/systemd/system/teamserver.service
+    block: |
+      [Unit]
+      Description=Cobalt Strike Team Server
+      After=network.target
+      StartLimitIntervalSec=0
+      
+      [Service]
+      Type=simple
+      Restart=always
+      RestartSec=1
+      User=root
+      WorkingDirectory=/opt/cobaltstrike/Server
+      ExecStart=/opt/cobaltstrike/Server/teamserver {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address']}} password webbug.profile
+      
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Start cobaltstrike service
+  block:
+    - name: Reload daemon
+      command: systemctl daemon-reload
+    
+    - name: Enable service
+      command: systemctl enable teamserver.service
+
+    - name: Start service
+      command: systemctl start teamserver.service
+      register: output
+
+    - name: Print output
+      debug: msg="{{ output }}"

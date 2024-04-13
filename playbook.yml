@@ -1,6 +1,31 @@
 ---
-- hosts: all
+- hosts: cstest
   roles:
   - install-dependencies
-  - kali-tools
   become: yes
+
+#- hosts: operator_vms
+#  roles:
+#  - kali-tools
+# become: yes
+
+- hosts: cstest
+  roles:
+    - cobaltstrike
+  become: yes
+
+
+# - hosts: raven
+#   roles:
+#     - ansible-role-docker
+#     - raven
+# 
+
+#---
+#- name: Set variables
+#  set_fact:
+#    username: 'fyr'
+#    password: 'Password123!'
+#    beacon_filename: 'bruh.exe' # for c2 callbacks
+#    asdf_filename: 'asdf.exe' # ikyky
+#    payload_dest: 'C:\Windows\Tasks'

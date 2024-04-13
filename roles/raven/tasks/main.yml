@@ -1,0 +1,7 @@
+---
+- name: Clone raven
+  git:
+    repo: https://github.com/fyrworx4/Raven.git
+    dest: /opt/impacket
+    version: docker-support
+  ignore_errors: true
