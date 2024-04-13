@@ -1,0 +1,85 @@
+---
+- name: Make new directory for sliver
+  file:
+    path: /opt/sliver
+    state: directory
+
+- name: Obtain Sliver release information from GitHub API
+  uri:
+    url: "https://api.github.com/repos/BishopFox/sliver/releases/latest"
+    method: GET
+    return_content: true
+  register: release_info
+
+- name: Extract Sliver client download URL
+  set_fact:
+    asset_url: "{{ item.browser_download_url }}"
+  loop: "{{ release_info.json.assets }}"
+  when: item.name == "sliver-client_linux"
+
+- name: Download Sliver client binary
+  get_url:
+    url: "{{ asset_url }}"
+    dest: /opt/sliver/sliver-client
+    mode: a+x
+
+- name: Extract Sliver server download URL
+  set_fact:
+    asset_url: "{{ item.browser_download_url }}"
+  loop: "{{ release_info.json.assets }}"
+  when: item.name == "sliver-server_linux"
+
+- name: Download Sliver server binary
+  get_url:
+    url: "{{ asset_url }}"
+    dest: /opt/sliver/sliver-server
+    mode: a+x
+
+- name: Generating Sliver configs
+  command: "/opt/sliver/sliver-server operator --name {{ config_name }} --lhost {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} --save /opt/sliver/sliver-teamserver.cfg"
+  ignore_errors: true
+
+- name: Fetch Sliver config
+  fetch:
+    src: /opt/sliver/sliver-teamserver.cfg
+    dest: /opt/sliver/
+    flat: true
+
+- name: Create service file
+  file:
+    path: /etc/systemd/system/sliver.service
+    state: touch
+
+- name: Create sliver service
+  blockinfile:
+    path: /etc/systemd/system/sliver.service
+    block: |
+      [Unit]
+      Description=Sliver
+      After=network.target
+      StartLimitIntervalSec=0
+
+      [Service]
+      Type=simple
+      Restart=on-failure
+      RestartSec=3
+      User=root
+      ExecStart=/opt/sliver/sliver-server daemon
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Start sliver service
+  block:
+    - name: Reload daemon
+      command: systemctl daemon-reload
+    
+    - name: Enable service
+      command: systemctl enable sliver.service
+
+    - name: Start service
+      command: systemctl start sliver.service
+      register: output
+
+    - name: Print output
+      debug: msg="{{ output }}"

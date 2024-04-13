@@ -29,7 +29,7 @@
       RestartSec=1
       User=root
       WorkingDirectory=/opt/cobaltstrike/Server
-      ExecStart=/opt/cobaltstrike/Server/teamserver {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address']}} password webbug.profile
+      ExecStart=/opt/cobaltstrike/Server/teamserver {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} password webbug.profile
       
       [Install]
       WantedBy=multi-user.target
